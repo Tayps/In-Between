@@ -7,10 +7,12 @@ from collections import Counter
 deck = []
 cardValue = {}
 
-winOdds = 0 
-dblOdds = 0 
-lssOdds = 0
-ev = 0
+evStats = {'winOdds':0, 
+           'dblOdds':0,
+           'lssOdds':0,
+           'ev':0,
+           'winningOuts':0,
+           'doubleOuts':0}
 
 for i in range(1,14):
     val = i
@@ -34,6 +36,7 @@ gameDeck = []
 # Create function to shuffle a set number of decks and create game deck.
 def shuffle(deckCount):
     global gameDeck
+    gameDeck.clear()
     gameDeck = list(np.repeat(deck,deckCount))
     rand.shuffle(gameDeck)
 
@@ -71,17 +74,17 @@ def compareValue(table, player):
 # Function to calculate expected value given outer cards
 def calEV(outer):
 
-    global winOdds
-    global dblOdds
-    global lssOdds
-    global ev
+    # global winOdds
+    # global dblOdds
+    # global lssOdds
+    # global ev
+    
+    global evStats
     
     winningCards = []
-    winningOuts = 0
-    
+
     doubleCards = []
-    doubleOuts = 0
-   
+
     currentDeck = gameDeck.copy()
     totalCardsRemaining = len(currentDeck)
     for i in range(totalCardsRemaining):
@@ -94,32 +97,44 @@ def calEV(outer):
         winningCards.append(i) # gives list of value that will win
 
     for j in winningCards:      # For each winning value,
-        winningOuts += total[j] # retrieve the number of cards left and sum up.
-
+        try:
+            evStats['winningOuts'] += total[j] # retrieve the number of cards left and sum up.
+        except:
+            evStats['winningOuts'] += 0 
     doubleCards.extend([cardValue[outer[0]], cardValue[outer[1]]]) #gives list of value that dbl
     for k in doubleCards:      #for each double value
-        doubleOuts += total[k] # retrieve the number of cards left and sum up 
+        try:
+            evStats['doubleOuts'] += total[k] # retrieve the number of cards left and sum up 
+        except:
+            evStats['doubleOuts'] += 0
+    evStats['winOdds'] = round(evStats['winningOuts']/totalCardsRemaining,2)
+    evStats['dblOdds'] = round(evStats['doubleOuts']/totalCardsRemaining,2)
+    evStats['lssOdds'] = round(1 - (evStats['winOdds'] + evStats['dblOdds']),2)
 
-    winOdds = round(winningOuts/totalCardsRemaining,2)
-    dblOdds = round(doubleOuts/totalCardsRemaining,2)
-    lssOdds = round(1 - (winOdds + dblOdds),2)
-
-    ev = round((1*winOdds) + (-1*lssOdds) + (-2*dblOdds),2)
+    evStats['ev'] = round((1*evStats['winOdds']) + (-1*evStats['lssOdds']) + (-2*evStats['dblOdds']),2)
     
     # return winOdds, dblOdds, lssOdds, ev
 
 
 # print("How many decks?", end="\n\n")
-deckCount = input("How many decks? \n\n")
-print("\n")
-shuffle(deckCount)
+# deckCount = input("How many decks? \n\n")
+# print("\n")
+# shuffle(deckCount)
 # endGame = False
 
 while True:
+    if len(gameDeck) < 3:
+        deckCount = input("How many decks? \n\n")
+        print("\n")
+        shuffle(deckCount)
+    else:
+        pass
     print("New Hand? [y/n]", end="\n\n")
     start = input()
     print("\n")
     if start == 'y':
+        for keys in evStats:
+            evStats[keys] = 0
         outer = []
         outer.extend(dealOuter())
         if checkAutoTiang(outer):
@@ -129,7 +144,7 @@ while True:
         else:
             calEV(outer)
             print("Cards are " + str(outer[0]) + " and " + str(outer[1]))
-            print("EV = " + str(ev) + " (Play on higher EV)", end="\n\n")
+            print("EV = " + str(evStats['ev']) + " (Play on higher EV)", end="\n\n")
             print("Player's move")
             print("1) Hit")
             print("2) Pass", end="\n\n")
@@ -142,6 +157,9 @@ while True:
                 inner.extend(dealInner())
                 print("You drew " + str(inner[0]), end="\n\n")
                 print(compareValue(outer,inner))
+                print("cards left: " + str(len(gameDeck)))
                 continue
-            
+    else:
+        break
+        
             

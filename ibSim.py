@@ -203,7 +203,8 @@ for hands in range(1,int(handCount)+1):
 # End of Simulation
 df = pd.DataFrame(log,columns = handData.keys())
 print('End of Simulation')
-print(df)
+# print(df)
+df.to_csv('sim0.csv',index = False, mode='w')
 
 
 # tlist = []

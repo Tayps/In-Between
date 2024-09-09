@@ -58,6 +58,6 @@ The goal is to draw a card that is in-between (exclusive) the 2 face-up cards.
 ---
 ## Code Walk-Through <a name = "codeWalkThrough"></a>
 
-**ibBetween.ipynb**: python notebook for experiementing and code testing in blocks.  
-**inBetween.py**   : python script for playing the game.  
-**ibSim.py**       : python script for simulating a set number of hands.  
+**ibBetween.ipynb** : python notebook for experiementing and code testing in blocks.  
+**inBetween.py**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: python script for playing the game.  
+**ibSim.py**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: python script for simulating a set number of hands.  
